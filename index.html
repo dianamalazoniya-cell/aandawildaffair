@@ -244,6 +244,8 @@ em,i,.note,.ask,.place,.plan-date{font-weight:600}
 .rsvp-card h2{color:var(--gold-2);margin-bottom:10px}
 .rsvp-card h2.script{font-family:var(--serif);font-style:italic;font-weight:500;font-size:44px;line-height:1.1;margin-bottom:14px;padding:0 .08em}
 .rsvp-card .lead{color:#ead9c4;font-size:18px}
+.rsvp-err{margin-top:12px;font-style:italic;font-size:16px;color:#f0c9b8;text-align:center}
+.rsvp-card button[disabled]{opacity:.7;cursor:wait}
 .rsvp-card .lead b{color:var(--gold-2);font-weight:700;font-style:italic;font-size:1.1em;white-space:nowrap;border-bottom:1px solid rgba(233,211,154,.6)}
 form{text-align:left;margin-top:28px;display:grid;gap:22px}
 label.f{display:block;font-family:var(--caps);font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
@@ -867,6 +869,7 @@ footer .caps{font-size:12px;color:var(--gold);margin-top:22px}
           </div></div>
 
         <button class="btn btn-solid" type="submit">Отправить ответ</button>
+        <p class="rsvp-err" id="rsvpErr" role="alert" hidden>Не получилось отправить — проверьте интернет и нажмите ещё раз</p>
       </form>
       <div class="thanks" role="status">
         <p class="script">Спасибо!</p>
@@ -995,11 +998,21 @@ footer .caps{font-size:12px;color:var(--gold);margin-top:22px}
     var no = form.go.value === 'no';
     form.querySelectorAll('.cond').forEach(function(el){ el.style.display = no ? 'none' : ''; });
   });
+  // ответы уходят в Google-таблицу «Свадьба 27.07 — ответы гостей» (скрипт «Свадьба — ответы анкеты», аккаунт Дианы)
+  var RSVP_URL = 'https://script.google.com/macros/s/AKfycbyKTgCz6xHcNZhYREmMLVLBfYEfqEg_sYereQdGgFJ_XQp4VdAuNieMGwi-21Tj8S0/exec';
+  var sendBtn = form.querySelector('button[type=submit]');
+  var sendErr = document.getElementById('rsvpErr');
   form.addEventListener('submit', function(e){
     e.preventDefault();
     if (!form.name.value.trim()) { form.name.focus(); form.name.style.borderBottomColor = '#e9d39a'; return; }
-    // TODO: отправка ответа (Google-таблица / Telegram) — после ответа Анжелины
-    document.getElementById('rsvpCard').classList.add('sent');
+    if (sendBtn.disabled) return;
+    sendBtn.disabled = true; sendBtn.textContent = 'Отправляем…'; sendErr.hidden = true;
+    var body = new URLSearchParams({ name: form.name.value.trim(), go: form.go.value, d26: form.d26.value, stay: form.stay.value });
+    fetch(RSVP_URL, { method: 'POST', mode: 'no-cors', body: body })
+      .then(function(){ document.getElementById('rsvpCard').classList.add('sent'); })
+      .catch(function(){
+        sendBtn.disabled = false; sendBtn.textContent = 'Отправить ответ'; sendErr.hidden = false;
+      });
   });
 })();
 </script>
