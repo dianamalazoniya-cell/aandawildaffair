@@ -7,7 +7,8 @@
 <meta name="description" content="Приглашение на свадьбу 27 июля 2027">
 <meta name="robots" content="noindex, nofollow">
 <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- один постоянный цвет для полос браузера (Safari, Telegram): иначе при прокрутке они перекрашиваются и мигают -->
+<meta name="theme-color" content="#160407"><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Playfair+Display:ital,wght@1,500&family=Bodoni+Moda:wght@500&family=Great+Vibes&family=Forum&display=swap" rel="stylesheet">
 <style>
@@ -21,7 +22,7 @@
   --caps:"Forum", "Cormorant Garamond", serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;background:#160407}
 body{
   background:#160407 var(--leo) center top/var(--leo-size) auto repeat fixed;
   color:var(--ink); font-family:var(--serif); font-size:19px; line-height:1.5; font-weight:600;
@@ -516,6 +517,8 @@ footer .caps{font-size:12px;color:var(--gold);margin-top:22px}
 }
 /* рамка из леопарда съела 20px ширины — возвращаем их тексту */
 @media (max-width:520px){
+  /* на телефоне «неподвижный» фон браузеры всё равно не держат, а перерисовка при прокрутке даёт мерцание */
+  body{background-attachment:scroll}
   section{padding-left:18px;padding-right:18px}
   .rsvp{padding-left:10px;padding-right:10px}
   /* обложка на телефоне: занимает весь экран (следующий блок не выглядывает),
